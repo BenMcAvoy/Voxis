@@ -19,6 +19,7 @@ namespace vox
         Chunk(std::uint8_t defaultId, std::uint8_t defaultData = 0);
 
         Voxel getVoxel(int x, int y, int z) const;
+        void setVoxel(int x, int y, int z, Voxel voxel);
 
         ral::Mesh greedyMesh() const;
 

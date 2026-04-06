@@ -8,6 +8,9 @@
 
 #include "chunk.hpp"
 
+#include <cstdlib>
+#include <ctime>
+
 constexpr auto WINDOW_WIDTH = 1280;
 constexpr auto WINDOW_HEIGHT = 720;
 
@@ -34,6 +37,8 @@ int main()
     uint32_t white = 0xffffffff;
     vox::ral::Image whiteImage(&white, 1, 1);
 
+    std::srand(static_cast<unsigned>(std::time(nullptr)));
+
     vox::Chunk chunk(1, 0);
     mesh = chunk.greedyMesh();
 
@@ -42,6 +47,29 @@ int main()
     // Main loop
     while (window.nextFrame())
     {
+        if (window.isKeyPressed(SDL_SCANCODE_F2))
+        {
+            // Pick a random face (0-5), then a random position on it
+            int face = std::rand() % 6;
+            int u = std::rand() % 16;
+            int v = std::rand() % 16;
+
+            int x, y, z;
+            switch (face)
+            {
+            case 0: x =  0; y = u; z = v; break; // -X face
+            case 1: x = 15; y = u; z = v; break; // +X face
+            case 2: x = u; y =  0; z = v; break; // -Y face
+            case 3: x = u; y = 15; z = v; break; // +Y face
+            case 4: x = u; y = v; z =  0; break; // -Z face
+            default: x = u; y = v; z = 15; break; // +Z face
+            }
+
+            chunk.setVoxel(x, y, z, {0, 0});
+            mesh = chunk.greedyMesh();
+            spdlog::info("Broke voxel at ({}, {}, {})", x, y, z);
+        }
+
         if (window.isKeyPressed(SDL_SCANCODE_F1))
         {
             wireframe = !wireframe;

@@ -19,6 +19,14 @@ Chunk::Chunk(std::uint8_t defaultId, std::uint8_t defaultData)
     }
 }
 
+void Chunk::setVoxel(int x, int y, int z, Voxel voxel)
+{
+    if (x < 0 || x >= SIZE || y < 0 || y >= SIZE || z < 0 || z >= SIZE)
+        throw std::out_of_range("Voxel coordinates out of range");
+
+    voxels[x][y][z] = voxel;
+}
+
 Voxel Chunk::getVoxel(int x, int y, int z) const
 {
     if (x < 0 || x >= SIZE || y < 0 || y >= SIZE || z < 0 || z >= SIZE)
