@@ -27,7 +27,7 @@ Mesh::Mesh(std::span<const ChunkVertex> vertices, std::span<const uint16_t> indi
     spdlog::trace("Creating mesh with {} vertices and {} indices", vertices.size(), indices.size());
 
     vertexBuffer = bgfx::createVertexBuffer(
-        bgfx::makeRef(vertices.data(), vertices.size_bytes()),
+        bgfx::copy(vertices.data(), vertices.size_bytes()),
         ChunkVertex::layout());
 
     if (!bgfx::isValid(vertexBuffer))
@@ -37,13 +37,14 @@ Mesh::Mesh(std::span<const ChunkVertex> vertices, std::span<const uint16_t> indi
     }
 
     indexBuffer = bgfx::createIndexBuffer(
-        bgfx::makeRef(indices.data(), indices.size_bytes()));
+        bgfx::copy(indices.data(), indices.size_bytes()));
 
     if (!bgfx::isValid(indexBuffer))
     {
         spdlog::error("Failed to create index buffer");
         indexBuffer = bgfx::IndexBufferHandle{bgfx::kInvalidHandle};
     }
+
 }
 
 Mesh::~Mesh()
@@ -54,6 +55,30 @@ Mesh::~Mesh()
         bgfx::destroy(vertexBuffer);
     if (bgfx::isValid(indexBuffer))
         bgfx::destroy(indexBuffer);
+}
+
+Mesh::Mesh(Mesh &&o) noexcept
+    : vertexBuffer(o.vertexBuffer), indexBuffer(o.indexBuffer)
+{
+    o.vertexBuffer = {bgfx::kInvalidHandle};
+    o.indexBuffer  = {bgfx::kInvalidHandle};
+}
+
+Mesh &Mesh::operator=(Mesh &&o) noexcept
+{
+    if (this != &o)
+    {
+        if (bgfx::isValid(vertexBuffer))
+            bgfx::destroy(vertexBuffer);
+        if (bgfx::isValid(indexBuffer))
+            bgfx::destroy(indexBuffer);
+
+        vertexBuffer = o.vertexBuffer;
+        indexBuffer  = o.indexBuffer;
+        o.vertexBuffer = {bgfx::kInvalidHandle};
+        o.indexBuffer  = {bgfx::kInvalidHandle};
+    }
+    return *this;
 }
 
 void Mesh::submit(bgfx::ViewId view, bgfx::ProgramHandle program, uint64_t state) const

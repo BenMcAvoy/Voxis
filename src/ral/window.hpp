@@ -40,6 +40,17 @@ namespace vox::ral
 
         float getFPS() const { return fps; }
 
+        bool isKeyPressed(SDL_Scancode scancode) const { return keyStates[scancode] == KeyState::Pressed; }
+        bool isKeyHeld(SDL_Scancode scancode) const { return keyStates[scancode] == KeyState::Held; }
+        bool isKeyReleased(SDL_Scancode scancode) const { return keyStates[scancode] == KeyState::Released; }
+        bool isKeyUp(SDL_Scancode scancode) const { return keyStates[scancode] == KeyState::Up; }
+        bool isMouseButtonPressed(int button) const { return mouseButtonStates[button] == KeyState::Pressed; }
+        bool isMouseButtonHeld(int button) const { return mouseButtonStates[button] == KeyState::Held; }
+        bool isMouseButtonReleased(int button) const { return mouseButtonStates[button] == KeyState::Released; }
+        bool isMouseButtonUp(int button) const { return mouseButtonStates[button] == KeyState::Up; }
+        std::pair<int, int> getMousePosition() const { return {mouseX, mouseY}; }
+        std::pair<int, int> getMouseDelta() const { return {mouseDeltaX, mouseDeltaY}; }
+
     private:
         SDL_Window *window{};
         int width, height;

@@ -6,6 +6,8 @@
 #include "ral/camera.hpp"
 #include "ral/helpers.hpp"
 
+#include "chunk.hpp"
+
 constexpr auto WINDOW_WIDTH = 1280;
 constexpr auto WINDOW_HEIGHT = 720;
 
@@ -13,7 +15,7 @@ int main()
 {
     spdlog::set_level(spdlog::level::trace);
 
-    vox::ral::Window window("Voxis", WINDOW_WIDTH, WINDOW_HEIGHT, vox::ral::RendererType::Direct3D12);
+    vox::ral::Window window("Voxis", WINDOW_WIDTH, WINDOW_HEIGHT, vox::ral::RendererType::Vulkan);
     vox::ral::Camera camera(window.getAspectRatio());
 
     // CCW triangle indices
@@ -32,9 +34,22 @@ int main()
     uint32_t white = 0xffffffff;
     vox::ral::Image whiteImage(&white, 1, 1);
 
+    vox::Chunk chunk(1, 0);
+    mesh = chunk.greedyMesh();
+
+    bool wireframe = false;
+
     // Main loop
     while (window.nextFrame())
     {
+        if (window.isKeyPressed(SDL_SCANCODE_F1))
+        {
+            wireframe = !wireframe;
+            spdlog::info("Wireframe mode {}", wireframe ? "enabled" : "disabled");
+        }
+
+        bgfx::setDebug(BGFX_DEBUG_TEXT | (wireframe ? BGFX_DEBUG_WIREFRAME : 0));
+
         camera.update(window.getAspectRatio(), &window);
         camera.submit(0);
 
