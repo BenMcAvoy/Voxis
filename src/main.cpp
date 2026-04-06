@@ -17,12 +17,12 @@ int main()
     vox::ral::Camera camera(window.getAspectRatio());
 
     // CCW triangle indices
-    vox::ral::ChunkVertex vertices[4] = {
-        {{-0.5f, 0.5f, 0.0f}, 0xff0000ff, {0.0f, 0.0f}}, // top-left, red    (ABGR: A=ff R=ff G=00 B=00)
-        {{0.5f, 0.5f, 0.0f}, 0xff00ff00, {1.0f, 0.0f}},  // top-right, green  (ABGR: A=ff R=00 G=ff B=00)
-        {{0.5f, -0.5f, 0.0f}, 0xffff0000, {1.0f, 1.0f}}, // bottom-right, blue (ABGR: A=ff R=00 G=00 B=ff)
-        {{-0.5f, -0.5f, 0.0f}, 0xffffffff, {0.0f, 1.0f}} // bottom-left, white
-    };
+    std::array<vox::ral::ChunkVertex, 4> vertices = {{
+        {bx::Vec3{-0.5f, 0.5f, 0.0f}, 0xff0000ff, vox::ral::Vec2{0.0f, 0.0f}}, // top-left, red    (ABGR: A=ff R=ff G=00 B=00)
+        {bx::Vec3{0.5f, 0.5f, 0.0f}, 0xff00ff00, vox::ral::Vec2{1.0f, 0.0f}},  // top-right, green  (ABGR: A=ff R=00 G=ff B=00)
+        {bx::Vec3{0.5f, -0.5f, 0.0f}, 0xffff0000, vox::ral::Vec2{1.0f, 1.0f}}, // bottom-right, blue (ABGR: A=ff R=00 G=00 B=ff)
+        {bx::Vec3{-0.5f, -0.5f, 0.0f}, 0xffffffff, vox::ral::Vec2{0.0f, 1.0f}} // bottom-left, white
+    }};
     std::array<uint16_t, 6> indices{3, 2, 0, 2, 1, 0};
 
     vox::ral::Mesh mesh(vertices, indices);

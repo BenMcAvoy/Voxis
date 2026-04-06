@@ -33,6 +33,8 @@ Window::Window(std::string_view title, int width, int height, bgfx::RendererType
     init.resolution.width = static_cast<uint32_t>(width);
     init.resolution.height = static_cast<uint32_t>(height);
 
+    init.resolution.reset = BGFX_RESET_MSAA_X4;
+
     init.type = rendererType;
 
 #ifndef _NDEBUG
@@ -88,13 +90,17 @@ bool Window::pollEvents()
     // Tick key states: Pressed -> Held, Released -> Up
     for (auto &state : keyStates)
     {
-        if (state == KeyState::Pressed) state = KeyState::Held;
-        else if (state == KeyState::Released) state = KeyState::Up;
+        if (state == KeyState::Pressed)
+            state = KeyState::Held;
+        else if (state == KeyState::Released)
+            state = KeyState::Up;
     }
     for (auto &state : mouseButtonStates)
     {
-        if (state == KeyState::Pressed) state = KeyState::Held;
-        else if (state == KeyState::Released) state = KeyState::Up;
+        if (state == KeyState::Pressed)
+            state = KeyState::Held;
+        else if (state == KeyState::Released)
+            state = KeyState::Up;
     }
 
     // Reset mouse deltas each frame before accumulating new events

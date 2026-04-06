@@ -16,6 +16,8 @@ Shader::Shader(std::string_view vsPath, std::string_view fsPath, bool autoResolv
         throw std::invalid_argument("Shader paths must not contain directory separators when autoResolve is true");
     }
 
+    std::string vsFullPath, fsFullPath;
+
     if (autoResolve)
     {
         const char *backendDir;
@@ -41,8 +43,8 @@ Shader::Shader(std::string_view vsPath, std::string_view fsPath, bool autoResolv
             throw std::runtime_error("Unsupported renderer type for shader auto-resolve");
         }
 
-        std::string vsFullPath = std::string("shaders/") + backendDir + "/" + vsPath.data();
-        std::string fsFullPath = std::string("shaders/") + backendDir + "/" + fsPath.data();
+        vsFullPath = std::string("shaders/") + backendDir + "/" + vsPath.data();
+        fsFullPath = std::string("shaders/") + backendDir + "/" + fsPath.data();
 
         spdlog::trace("Auto-resolving shader paths to '{}' and '{}'", vsFullPath, fsFullPath);
 

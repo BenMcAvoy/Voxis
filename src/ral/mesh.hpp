@@ -20,6 +20,8 @@ namespace vox::ral
         uint32_t color;
         Vec2 uv;
 
+        ChunkVertex(bx::Vec3 pos, uint32_t color, Vec2 uv) : pos(pos), color(color), uv(uv) {}
+
         static bgfx::VertexLayout layout();
     };
 
