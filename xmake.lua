@@ -28,7 +28,6 @@ package_end()
 
 add_requires("bgfx 8752", {configs = {vs = "2022", debug = is_mode("debug"), runtimes = is_mode("debug") and "MTd" or "MT"}})
 add_requires("libsdl3", {configs = {shared = true}})
-add_requires("glm")
 add_requires("stb")
 add_requires("freetype")
 add_requires("imgui-fork")
@@ -37,8 +36,7 @@ add_requires("spdlog")
 target("Voxis")
     set_kind("binary")
     add_files("src/**.cpp")
-    add_packages("bgfx", "libsdl3", "glm", "stb", "freetype", "imgui-fork", "spdlog")
-    add_defines("GLM_FORCE_LEFT_HANDED")
+    add_packages("bgfx", "libsdl3", "stb", "freetype", "imgui-fork", "spdlog")
     add_includedirs("src")
 
     if is_mode("debug") then

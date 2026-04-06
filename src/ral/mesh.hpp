@@ -1,8 +1,7 @@
 #pragma once
 
 #include <bgfx/bgfx.h>
-
-#include <glm/glm.hpp>
+#include <bx/math.h>
 
 #include <spdlog/spdlog.h>
 
@@ -10,11 +9,16 @@
 
 namespace vox::ral
 {
+    struct Vec2
+    {
+        float x, y;
+    };
+
     struct ChunkVertex
     {
-        glm::vec3 pos;
+        bx::Vec3 pos;
         uint32_t color;
-        glm::vec2 uv;
+        Vec2 uv;
 
         static bgfx::VertexLayout layout();
     };
