@@ -13,7 +13,7 @@ int main()
 {
     spdlog::set_level(spdlog::level::trace);
 
-    vox::ral::Window window("Voxis", WINDOW_WIDTH, WINDOW_HEIGHT, vox::ral::RendererType::Vulkan);
+    vox::ral::Window window("Voxis", WINDOW_WIDTH, WINDOW_HEIGHT, vox::ral::RendererType::Direct3D12);
     vox::ral::Camera camera(window.getAspectRatio());
 
     // CCW triangle indices
@@ -40,5 +40,7 @@ int main()
 
         vox::ral::setTexture(0, s_texColor, whiteImage);
         mesh.submit(0, shader.getProgramHandle());
+
+        bgfx::dbgTextPrintf(1, 1, 0x0f, "FPS: %.2f", window.getFPS());
     }
 }

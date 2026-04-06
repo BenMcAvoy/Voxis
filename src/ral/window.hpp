@@ -38,6 +38,8 @@ namespace vox::ral
 
         float getAspectRatio() const;
 
+        float getFPS() const { return fps; }
+
     private:
         SDL_Window *window{};
         int width, height;
@@ -49,7 +51,9 @@ namespace vox::ral
         int mouseDeltaX = 0, mouseDeltaY = 0;
         int mouseX = 0, mouseY = 0;
 
-        friend class Camera;
+        int frameCount = 0;
+        float timeAccumulator = 0.0f;
+        float fps = 0.0f;
 
 #ifndef _NDEBUG
         struct BgfxCallbacks : bgfx::CallbackI
@@ -91,5 +95,7 @@ namespace vox::ral
         };
         BgfxCallbacks bgfxCallbacks{};
 #endif
+
+        friend class Camera;
     };
 } // namespace vox::ral

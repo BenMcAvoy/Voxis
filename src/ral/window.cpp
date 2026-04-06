@@ -152,6 +152,8 @@ bool Window::pollEvents()
 
 void Window::clear() const
 {
+    bgfx::setDebug(BGFX_DEBUG_TEXT);
+    bgfx::dbgTextClear();
     bgfx::setViewRect(0, 0, 0, width, height);
     bgfx::setViewClear(0, BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH | BGFX_CLEAR_STENCIL, 0x202020ff, 1.0f, 0);
 }
@@ -175,6 +177,21 @@ void Window::end() const
 bool Window::nextFrame()
 {
     static bool presentNeeded = false;
+    static uint64_t lastTime = SDL_GetTicksNS();
+
+    uint64_t now = SDL_GetTicksNS();
+    float dt = static_cast<float>(now - lastTime) * 1e-9f;
+    lastTime = now;
+
+    frameCount++;
+    timeAccumulator += dt;
+    if (timeAccumulator > 1.0f)
+    {
+        fps = static_cast<float>(frameCount) / timeAccumulator;
+        frameCount = 0;
+        timeAccumulator = 0.0f;
+    }
+
     if (presentNeeded)
         present();
     else
