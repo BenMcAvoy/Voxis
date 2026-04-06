@@ -11,6 +11,14 @@
 
 namespace vox::ral
 {
+    enum class KeyState
+    {
+        Up,
+        Pressed,
+        Held,
+        Released
+    };
+
     class Window
     {
     public:
@@ -33,6 +41,15 @@ namespace vox::ral
     private:
         SDL_Window *window{};
         int width, height;
+
+        // Keys and mouse state
+        std::array<KeyState, 512> keyStates{}; // SDL supports up to 511 scancodes
+
+        std::array<KeyState, 8> mouseButtonStates{}; // SDL supports up to 5 mouse buttons, but we'll reserve 8 just in case
+        int mouseDeltaX = 0, mouseDeltaY = 0;
+        int mouseX = 0, mouseY = 0;
+
+        friend class Camera;
 
 #ifndef _NDEBUG
         struct BgfxCallbacks : bgfx::CallbackI

@@ -35,7 +35,7 @@ int main()
     // Main loop
     while (window.nextFrame())
     {
-        camera.update(window.getAspectRatio());
+        camera.update(window.getAspectRatio(), &window);
         camera.submit(0);
 
         vox::ral::setTexture(0, s_texColor, whiteImage);

@@ -70,6 +70,10 @@ Window::Window(std::string_view title, int width, int height, bgfx::RendererType
     }
 
     spdlog::info("BGFX initialized successfully");
+
+    SDL_HideCursor();
+    if (!SDL_SetWindowRelativeMouseMode(window, true))
+        spdlog::warn("Failed to enable relative mouse mode: {}", SDL_GetError());
 }
 
 Window::~Window()
@@ -81,6 +85,22 @@ Window::~Window()
 
 bool Window::pollEvents()
 {
+    // Tick key states: Pressed -> Held, Released -> Up
+    for (auto &state : keyStates)
+    {
+        if (state == KeyState::Pressed) state = KeyState::Held;
+        else if (state == KeyState::Released) state = KeyState::Up;
+    }
+    for (auto &state : mouseButtonStates)
+    {
+        if (state == KeyState::Pressed) state = KeyState::Held;
+        else if (state == KeyState::Released) state = KeyState::Up;
+    }
+
+    // Reset mouse deltas each frame before accumulating new events
+    mouseDeltaX = 0;
+    mouseDeltaY = 0;
+
     SDL_Event event;
     while (SDL_PollEvent(&event))
     {
@@ -94,6 +114,37 @@ bool Window::pollEvents()
             height = event.window.data2;
 
             spdlog::info("Window resized to {}x{}", width, height);
+        }
+        else if (event.type == SDL_EVENT_MOUSE_MOTION)
+        {
+            mouseDeltaX = event.motion.xrel;
+            mouseDeltaY = event.motion.yrel;
+            mouseX = event.motion.x;
+            mouseY = event.motion.y;
+        }
+        else if (event.type == SDL_EVENT_MOUSE_BUTTON_DOWN || event.type == SDL_EVENT_MOUSE_BUTTON_UP)
+        {
+            int buttonIndex = event.button.button; // SDL buttons are 1-indexed
+            if (buttonIndex >= 1 && buttonIndex <= 8)
+            {
+                KeyState &state = mouseButtonStates[buttonIndex - 1];
+                if (event.type == SDL_EVENT_MOUSE_BUTTON_DOWN)
+                    state = KeyState::Pressed;
+                else
+                    state = KeyState::Released;
+            }
+        }
+        else if (event.type == SDL_EVENT_KEY_DOWN || event.type == SDL_EVENT_KEY_UP)
+        {
+            int scancode = event.key.scancode;
+            if (scancode >= 0 && scancode < static_cast<int>(keyStates.size()))
+            {
+                KeyState &state = keyStates[scancode];
+                if (event.type == SDL_EVENT_KEY_DOWN)
+                    state = KeyState::Pressed;
+                else
+                    state = KeyState::Released;
+            }
         }
     }
     return true;
